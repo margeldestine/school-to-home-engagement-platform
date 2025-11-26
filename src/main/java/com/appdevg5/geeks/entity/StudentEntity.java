@@ -4,10 +4,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-
 @Entity
 public class StudentEntity {
 
@@ -15,34 +11,21 @@ public class StudentEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int student_id;
 
+    private int section_id;
     private int student_number;
     private String first_name;
     private String last_name;
     private int grade_level;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
-
-    @OneToOne
-    @JoinColumn(name = "parent_id")
-    private ParentEntity parent;
-
-    @ManyToOne
-    @JoinColumn(name = "section_id", nullable = true)
-    private SectionEntity section;
-
     public StudentEntity() { }
 
-    public StudentEntity(int student_id, int student_number, String first_name, String last_name, int grade_level, UserEntity user, ParentEntity parent, SectionEntity section) {
+    public StudentEntity(int student_id, int section_id, int student_number, String first_name, String last_name, int grade_level) {
         this.student_id = student_id;
+        this.section_id = section_id;
         this.student_number = student_number;
         this.first_name = first_name;
         this.last_name = last_name;
         this.grade_level = grade_level;
-        this.user = user;
-        this.parent = parent;
-        this.section = section;
     }
 
     public int getStudent_id() {
@@ -51,6 +34,15 @@ public class StudentEntity {
 
     public void setStudent_id(int student_id) {
         this.student_id = student_id;
+    }
+
+    
+    public int getSection_id() {
+        return section_id;
+    }
+
+    public void setSection_id(int section_id) {
+        this.section_id = section_id;
     }
 
     public int getStudent_number() {
@@ -83,30 +75,6 @@ public class StudentEntity {
 
     public void setGrade_level(int grade_level) {
         this.grade_level = grade_level;
-    }
-
-    public UserEntity getUser() {
-        return user;
-    }
-
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public ParentEntity getParent() {
-        return parent;
-    }
-
-    public void setParent(ParentEntity parent) {
-        this.parent = parent;
-    }
-
-    public SectionEntity getSection() {
-        return section;
-    }
-
-    public void setSection(SectionEntity section) {
-        this.section = section;
     }
 
     public void getProfile() {
