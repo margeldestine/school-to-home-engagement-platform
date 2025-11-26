@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
 public class CommunicationEntity {
@@ -18,11 +19,11 @@ public class CommunicationEntity {
     private String title;
     private String content;
     private LocalDateTime event_Date;
-    private LocalDateTime posted_At;
+    private Timestamp posted_At;
 
     public CommunicationEntity() { }
 
-    public CommunicationEntity(int communication_id, int teacher_id, int admin_id, String title, String content, LocalDateTime event_Date, LocalDateTime posted_At) {
+    public CommunicationEntity(int communication_id, int teacher_id, int admin_id, String title, String content, LocalDateTime event_Date, Timestamp posted_At) {
         this.communication_id = communication_id;
         this.teacher_id = teacher_id;
         this.admin_id = admin_id;
@@ -80,11 +81,11 @@ public class CommunicationEntity {
         this.event_Date = event_Date;
     }
 
-    public LocalDateTime getPosted_At() {
+    public Timestamp getPosted_At() {
         return posted_At;
     }
 
-    public void setPosted_At(LocalDateTime posted_At) {
+    public void setPosted_At(Timestamp posted_At) {
         this.posted_At = posted_At;
     }
 
