@@ -26,11 +26,11 @@ public class StudentService {
     StudentEntity student = srepo.findById(studentId)
         .orElseThrow(() -> new NoSuchElementException("Student " + studentId + " does not exist"));
 
+    student.setSection_id(newStudentDetails.getSection_id());   
     student.setStudent_number(newStudentDetails.getStudent_number());
     student.setFirst_name(newStudentDetails.getFirst_name());
     student.setLast_name(newStudentDetails.getLast_name());
     student.setGrade_level(newStudentDetails.getGrade_level());
-    student.setSection(newStudentDetails.getSection());
 
         return srepo.save(student);
     }
