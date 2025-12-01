@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.List;
+import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class SubjectEntity {
@@ -14,6 +18,10 @@ public class SubjectEntity {
 
     private String subject_code;
     private String subject_name;
+
+    @OneToMany(mappedBy = "subject")
+    @JsonManagedReference(value = "subject-grades")
+    private List<GradeEntity> grades = new ArrayList<>();
 
     public SubjectEntity() {
     }
@@ -46,6 +54,14 @@ public class SubjectEntity {
 
     public void setSubject_name(String subject_name) {
         this.subject_name = subject_name;
+    }
+
+    public List<GradeEntity> getGrades() {
+        return grades;
+    }
+
+    public void setGrades(List<GradeEntity> grades) {
+        this.grades = grades;
     }
 }
 

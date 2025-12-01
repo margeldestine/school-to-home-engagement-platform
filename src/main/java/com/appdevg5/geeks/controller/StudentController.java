@@ -8,6 +8,7 @@ import com.appdevg5.geeks.service.StudentService;
 
 @RestController
 @RequestMapping("/api/student")
+@CrossOrigin(origins = "http://localhost:3000")
 public class StudentController {
 
     @Autowired
@@ -18,8 +19,18 @@ public class StudentController {
         return sserv.insertStudentRecord(student);
     }
 
+    @PostMapping
+    public StudentEntity createStudent(@RequestBody StudentEntity student) {
+        return sserv.insertStudentRecord(student);
+    }
+
     @GetMapping("/getAllStudents")
-    public List<StudentEntity> getAllStudents() {
+    public List<StudentEntity> getAllStudents(){
+        return sserv.getAllStudents();
+    }
+
+    @GetMapping
+    public List<StudentEntity> getStudents(){
         return sserv.getAllStudents();
     }
 

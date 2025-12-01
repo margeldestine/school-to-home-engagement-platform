@@ -7,7 +7,8 @@ import com.appdevg5.geeks.entity.BehaviorLogEntity;
 import com.appdevg5.geeks.service.BehaviorLogService;
 
 @RestController
-@RequestMapping("/api/behaviorlog")
+@RequestMapping("/api/behavior-logs")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BehaviorLogController {
 
     @Autowired
@@ -18,8 +19,18 @@ public class BehaviorLogController {
         return bserv.insertBehaviorLogRecord(behaviorLog);
     }
 
+    @PostMapping
+    public BehaviorLogEntity createBehaviorLog(@RequestBody BehaviorLogEntity behaviorLog) {
+        return bserv.insertBehaviorLogRecord(behaviorLog);
+    }
+
     @GetMapping("/getAllBehaviorLogs")
     public List<BehaviorLogEntity> getAllBehaviorLogs() {
+        return bserv.getAllBehaviorLogs();
+    }
+
+    @GetMapping
+    public List<BehaviorLogEntity> getBehaviorLogs() {
         return bserv.getAllBehaviorLogs();
     }
 

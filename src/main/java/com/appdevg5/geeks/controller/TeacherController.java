@@ -8,6 +8,7 @@ import com.appdevg5.geeks.service.TeacherService;
 
 @RestController
 @RequestMapping("/api/teacher")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TeacherController {
 
     @Autowired
@@ -18,8 +19,18 @@ public class TeacherController {
         return tserv.insertTeacherRecord(teacher);
     }
 
+    @PostMapping
+    public TeacherEntity createTeacher(@RequestBody TeacherEntity teacher) {
+        return tserv.insertTeacherRecord(teacher);
+    }
+
     @GetMapping("/getAllTeachers")
     public List<TeacherEntity> getAllTeachers() {
+        return tserv.getAllTeachers();
+    }
+
+    @GetMapping
+    public List<TeacherEntity> getTeachers() {
         return tserv.getAllTeachers();
     }
 

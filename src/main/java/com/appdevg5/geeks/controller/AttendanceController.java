@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.appdevg5.geeks.entity.AttendanceEntity;
 import com.appdevg5.geeks.service.AttendanceService;
 
 @RestController
 @RequestMapping("/api/attendance")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AttendanceController {
 
     @Autowired
@@ -28,8 +30,18 @@ public class AttendanceController {
         return aserv.insertAttendanceRecord(attendance);
     }
 
+    @PostMapping
+    public AttendanceEntity createAttendance(@RequestBody AttendanceEntity attendance){
+        return aserv.insertAttendanceRecord(attendance);
+    }
+
     @GetMapping("/getAllAttendances")
     public List<AttendanceEntity> getAllAttendances(){
+        return aserv.getAllAttendances();
+    }
+
+    @GetMapping
+    public List<AttendanceEntity> getAttendances(){
         return aserv.getAllAttendances();
     }
 
