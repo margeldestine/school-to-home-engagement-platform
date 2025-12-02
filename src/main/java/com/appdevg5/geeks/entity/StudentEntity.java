@@ -1,6 +1,7 @@
 package com.appdevg5.geeks.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,7 +23,8 @@ public class StudentEntity {
     @JoinColumn(name = "section_id")
     @JsonBackReference(value = "section-students")
     private SectionEntity section;
-    private int student_number;
+    @Column(name = "student_number", length = 20)
+    private String student_number;
     private String first_name;
     private String last_name;
     private int grade_level;
@@ -45,7 +47,7 @@ public class StudentEntity {
 
     public StudentEntity() { }
 
-    public StudentEntity(int student_id, SectionEntity section, int student_number, String first_name, String last_name, int grade_level) {
+    public StudentEntity(int student_id, SectionEntity section, String student_number, String first_name, String last_name, int grade_level) {
         this.student_id = student_id;
         this.section = section;
         this.student_number = student_number;
@@ -70,11 +72,11 @@ public class StudentEntity {
         this.section = new SectionEntity(section_id);
     }
 
-    public int getStudent_number() {
+    public String getStudent_number() {
         return student_number;
     }
 
-    public void setStudent_number(int student_number) {
+    public void setStudent_number(String student_number) {
         this.student_number = student_number;
     }
 
