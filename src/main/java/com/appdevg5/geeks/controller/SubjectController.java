@@ -7,7 +7,8 @@ import com.appdevg5.geeks.entity.SubjectEntity;
 import com.appdevg5.geeks.service.SubjectService;
 
 @RestController
-@RequestMapping("/api/subject")
+@RequestMapping("/api/subjects")
+@CrossOrigin(origins = "http://localhost:3000")
 public class SubjectController {
 
     @Autowired
@@ -18,8 +19,18 @@ public class SubjectController {
         return sserv.insertSubjectRecord(subject);
     }
 
+    @PostMapping
+    public SubjectEntity createSubject(@RequestBody SubjectEntity subject) {
+        return sserv.insertSubjectRecord(subject);
+    }
+
     @GetMapping("/getAllSubjects")
     public List<SubjectEntity> getAllSubjects() {
+        return sserv.getAllSubjects();
+    }
+
+    @GetMapping
+    public List<SubjectEntity> getSubjects() {
         return sserv.getAllSubjects();
     }
 

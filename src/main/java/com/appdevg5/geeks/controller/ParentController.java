@@ -8,6 +8,7 @@ import com.appdevg5.geeks.service.ParentService;
 
 @RestController
 @RequestMapping("/api/parent")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ParentController {
 
     @Autowired
@@ -18,8 +19,18 @@ public class ParentController {
         return pserv.insertParentRecord(parent);
     }
 
+    @PostMapping
+    public ParentEntity createParent(@RequestBody ParentEntity parent) {
+        return pserv.insertParentRecord(parent);
+    }
+
     @GetMapping("/getAllParents")
     public List<ParentEntity> getAllParents() {
+        return pserv.getAllParents();
+    }
+
+    @GetMapping
+    public List<ParentEntity> getParents() {
         return pserv.getAllParents();
     }
 

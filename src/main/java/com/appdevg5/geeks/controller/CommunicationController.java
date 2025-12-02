@@ -8,6 +8,7 @@ import com.appdevg5.geeks.service.CommunicationService;
 
 @RestController
 @RequestMapping("/api/communication")
+@CrossOrigin(origins = "http://localhost:3000")
 public class CommunicationController {
 
     @Autowired
@@ -18,8 +19,18 @@ public class CommunicationController {
         return cserv.insertCommunication(communication);
     }
 
+    @PostMapping
+    public CommunicationEntity createCommunication(@RequestBody CommunicationEntity communication) {
+        return cserv.insertCommunication(communication);
+    }
+
     @GetMapping("/getAllCommunications")
     public List<CommunicationEntity> getAllCommunications() {
+        return cserv.getAllCommunications();
+    }
+
+    @GetMapping
+    public List<CommunicationEntity> getCommunications() {
         return cserv.getAllCommunications();
     }
 

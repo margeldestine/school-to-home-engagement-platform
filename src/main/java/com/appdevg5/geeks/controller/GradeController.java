@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.appdevg5.geeks.entity.GradeEntity;
 import com.appdevg5.geeks.service.GradeService;
 
 @RestController
-@RequestMapping("/api/grade")
+@RequestMapping("/api/grades")
+@CrossOrigin(origins = "http://localhost:3000")
 public class GradeController {
 
     @Autowired
@@ -28,8 +30,18 @@ public class GradeController {
         return gserv.insertGradeRecord(grade);
     }
 
+    @PostMapping
+    public GradeEntity createGrade(@RequestBody GradeEntity grade){
+        return gserv.insertGradeRecord(grade);
+    }
+
     @GetMapping("/getAllGrades")
     public List <GradeEntity> getAllGrades(){
+        return gserv.getAllGrades();
+    }
+
+    @GetMapping
+    public List<GradeEntity> getGrades(){
         return gserv.getAllGrades();
     }
 

@@ -4,8 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import java.sql.Date;
 import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 public class BehaviorLogEntity {
@@ -18,6 +21,10 @@ public class BehaviorLogEntity {
     private String description;
     private Date incident_date;
     private Timestamp recorded_at;
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    @JsonBackReference(value = "student-behaviorLogs")
+    private StudentEntity student;
 
     public BehaviorLogEntity() {
     }
@@ -68,6 +75,23 @@ public class BehaviorLogEntity {
 
     public void setRecorded_at(Timestamp recorded_at) {
         this.recorded_at = recorded_at;
+    }
+
+    public StudentEntity getStudent() {
+        return student;
+    }
+
+    public void setStudent(StudentEntity student) {
+        this.student = student;
+    }
+
+    public int getStudent_id() {
+        return student != null ? student.getStudent_id() : 0;
+    }
+
+    public void setStudent_id(int student_id) {
+        this.student = new StudentEntity();
+        this.student.setStudent_id(student_id);
     }
 }
 

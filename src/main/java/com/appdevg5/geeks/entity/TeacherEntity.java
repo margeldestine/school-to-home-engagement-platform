@@ -6,6 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
+import java.util.List;
+import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 public class TeacherEntity {
@@ -17,6 +21,14 @@ public class TeacherEntity {
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference(value = "teacher-communications")
+    private List<CommunicationEntity> communications = new ArrayList<>();
+
+    @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference(value = "teacher-forms")
+    private List<FormEntity> forms = new ArrayList<>();
 
     public TeacherEntity() {
     }
@@ -38,6 +50,22 @@ public class TeacherEntity {
     }
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+
+    public List<CommunicationEntity> getCommunications() {
+        return communications;
+    }
+
+    public void setCommunications(List<CommunicationEntity> communications) {
+        this.communications = communications;
+    }
+
+    public List<FormEntity> getForms() {
+        return forms;
+    }
+
+    public void setForms(List<FormEntity> forms) {
+        this.forms = forms;
     }
 
     public void recordedGrade() {
