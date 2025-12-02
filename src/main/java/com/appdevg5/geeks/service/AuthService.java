@@ -30,7 +30,12 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setFirst_name(dto.getFirstName());
         user.setLast_name(dto.getLastName());
-        user.setRole(dto.getRole());
+        String role = dto.getRole();
+        role = role == null ? "PARENT" : role.toUpperCase();
+        if (!role.equals("TEACHER") && !role.equals("PARENT")) {
+            throw new RuntimeException("Invalid role");
+        }
+        user.setRole(role);
         user.setCreated_at(new Timestamp(System.currentTimeMillis()));
 
         UserEntity saved = userRepository.save(user);
