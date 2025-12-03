@@ -24,6 +24,8 @@ public class CommunicationEntity {
     private int admin_id;
     private String title;
     private String content;
+    private String description;
+    private String details;
     private LocalDateTime event_Date;
     private Timestamp posted_At;
 
@@ -78,6 +80,22 @@ public class CommunicationEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public LocalDateTime getEvent_Date() {
