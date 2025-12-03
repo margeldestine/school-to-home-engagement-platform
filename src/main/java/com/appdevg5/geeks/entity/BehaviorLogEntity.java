@@ -8,7 +8,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 import java.sql.Date;
 import java.sql.Timestamp;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 public class BehaviorLogEntity {
@@ -21,9 +21,10 @@ public class BehaviorLogEntity {
     private String description;
     private Date incident_date;
     private Timestamp recorded_at;
+    
     @ManyToOne
     @JoinColumn(name = "student_id")
-    @JsonBackReference(value = "student-behaviorLogs")
+    @JsonIgnoreProperties({"behaviorLogs", "attendances", "grades", "enrollments"})
     private StudentEntity student;
 
     public BehaviorLogEntity() {
@@ -94,4 +95,3 @@ public class BehaviorLogEntity {
         this.student.setStudent_id(student_id);
     }
 }
-

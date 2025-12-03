@@ -2,7 +2,10 @@ package com.appdevg5.geeks.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import com.appdevg5.geeks.entity.BehaviorLogEntity;
 import com.appdevg5.geeks.service.BehaviorLogService;
 
@@ -20,7 +23,20 @@ public class BehaviorLogController {
     }
 
     @PostMapping
-    public BehaviorLogEntity createBehaviorLog(@RequestBody BehaviorLogEntity behaviorLog) {
+    public BehaviorLogEntity createBehaviorLog(@RequestBody Map<String, Object> payload) {
+        int studentId = (Integer) payload.get("student_id");
+        String incidentDate = (String) payload.get("incident_date");
+        String description = (String) payload.get("description");
+        String type = (String) payload.get("type");
+        String recordedAt = (String) payload.get("recorded_at");
+        
+        BehaviorLogEntity behaviorLog = new BehaviorLogEntity();
+        behaviorLog.setStudent_id(studentId);
+        behaviorLog.setIncident_date(Date.valueOf(incidentDate));
+        behaviorLog.setDescription(description);
+        behaviorLog.setType(type);
+        behaviorLog.setRecorded_at(Timestamp.valueOf(recordedAt));
+        
         return bserv.insertBehaviorLogRecord(behaviorLog);
     }
 
@@ -44,4 +60,3 @@ public class BehaviorLogController {
         return bserv.deleteBehaviorLog(behaviorId);
     }
 }
-

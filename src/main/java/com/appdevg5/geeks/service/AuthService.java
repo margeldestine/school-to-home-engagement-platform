@@ -3,7 +3,11 @@ package com.appdevg5.geeks.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.appdevg5.geeks.repository.UserRepository;
+import com.appdevg5.geeks.repository.TeacherRepository;
+import com.appdevg5.geeks.repository.ParentRepository;
 import com.appdevg5.geeks.entity.UserEntity;
+import com.appdevg5.geeks.entity.TeacherEntity;
+import com.appdevg5.geeks.entity.ParentEntity;
 import com.appdevg5.geeks.dto.RegisterRequestDTO;
 import com.appdevg5.geeks.dto.LoginRequestDTO;
 import com.appdevg5.geeks.dto.AuthResponseDTO;
@@ -18,6 +22,12 @@ public class AuthService {
     private UserRepository userRepository;
 
     @Autowired
+    private TeacherRepository teacherRepository;
+
+    @Autowired
+    private ParentRepository parentRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     public AuthResponseDTO register(RegisterRequestDTO dto) {
@@ -30,6 +40,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setFirst_name(dto.getFirstName());
         user.setLast_name(dto.getLastName());
+        
         String role = dto.getRole();
         role = role == null ? "PARENT" : role.toUpperCase();
         if (!role.equals("TEACHER") && !role.equals("PARENT")) {
@@ -39,15 +50,27 @@ public class AuthService {
         user.setCreated_at(new Timestamp(System.currentTimeMillis()));
 
         UserEntity saved = userRepository.save(user);
+        
+        // Create corresponding Teacher or Parent record
+        if (role.equals("TEACHER")) {
+            TeacherEntity teacher = new TeacherEntity();
+            teacher.setUser(saved);
+            teacherRepository.save(teacher);
+        } else if (role.equals("PARENT")) {
+            ParentEntity parent = new ParentEntity();
+            parent.setUser(saved);
+            parentRepository.save(parent);
+        }
+
         return new AuthResponseDTO(saved.getUser_id(), saved.getFirst_name(), saved.getLast_name(), saved.getRole());
     }
 
     public AuthResponseDTO login(LoginRequestDTO dto) {
-        UserEntity user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new NoSuchElementException("Invalid email or password"));
+        UserEntity user = userRepository.findByEmail(dto.getEmail())
+            .orElseThrow(() -> new NoSuchElementException("Invalid email or password"));
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new NoSuchElementException("Invalid email or password");
         }
         return new AuthResponseDTO(user.getUser_id(), user.getFirst_name(), user.getLast_name(), user.getRole());
     }
 }
-

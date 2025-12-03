@@ -28,6 +28,7 @@ public class TeacherController {
     public List<TeacherEntity> getAllTeachers() {
         return tserv.getAllTeachers();
     }
+    
 
     @GetMapping
     public List<TeacherEntity> getTeachers() {
@@ -42,5 +43,10 @@ public class TeacherController {
     @DeleteMapping("/deleteTeacher/{tid}")
     public String deleteTeacher(@PathVariable int tid) {
         return tserv.deleteTeacher(tid);
+    }
+
+    @GetMapping("/getTeacherByUserId/{userId}")
+    public TeacherEntity getTeacherByUserId(@PathVariable int userId) {
+        return tserv.getTeacherByUserId(userId);
     }
 }

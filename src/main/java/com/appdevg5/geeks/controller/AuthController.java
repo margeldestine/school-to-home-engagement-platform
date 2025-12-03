@@ -13,6 +13,7 @@ import com.appdevg5.geeks.dto.AuthResponseDTO;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
     @Autowired
@@ -23,21 +24,8 @@ public class AuthController {
         return authService.register(dto);
     }
 
-    @PostMapping("/register/teacher")
-    public AuthResponseDTO registerTeacher(@RequestBody RegisterRequestDTO dto) {
-        dto.setRole("TEACHER");
-        return authService.register(dto);
-    }
-
-    @PostMapping("/register/parent")
-    public AuthResponseDTO registerParent(@RequestBody RegisterRequestDTO dto) {
-        dto.setRole("PARENT");
-        return authService.register(dto);
-    }
-
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody LoginRequestDTO dto) {
         return authService.login(dto);
     }
 }
-
