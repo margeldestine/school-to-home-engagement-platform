@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.NoSuchElementException;
 import com.appdevg5.geeks.entity.BehaviorLogEntity;
+import com.appdevg5.geeks.entity.StudentEntity;
 import com.appdevg5.geeks.repository.BehaviorLogRepository;
+import com.appdevg5.geeks.repository.StudentRepository;
 
 @Service
 public class BehaviorLogService {
@@ -13,7 +15,16 @@ public class BehaviorLogService {
     @Autowired
     BehaviorLogRepository brepo;
 
+    @Autowired
+    StudentRepository srepo;
+
     public BehaviorLogEntity insertBehaviorLogRecord(BehaviorLogEntity behaviorLog) {
+        if (behaviorLog.getStudent() != null && behaviorLog.getStudent().getStudent_id() > 0) {
+            StudentEntity student = srepo.findById(behaviorLog.getStudent().getStudent_id())
+                .orElseThrow(() -> new NoSuchElementException("Student not found"));
+            behaviorLog.setStudent(student);
+        }
+        
         return brepo.save(behaviorLog);
     }
 
@@ -24,6 +35,12 @@ public class BehaviorLogService {
     public BehaviorLogEntity updateBehaviorLog(int behaviorId, BehaviorLogEntity newBehaviorLogDetails) {
         BehaviorLogEntity behaviorLog = brepo.findById(behaviorId)
             .orElseThrow(() -> new NoSuchElementException("BehaviorLog " + behaviorId + " does not exist"));
+
+        if (newBehaviorLogDetails.getStudent_id() > 0) {
+            StudentEntity student = srepo.findById(newBehaviorLogDetails.getStudent_id())
+                .orElseThrow(() -> new NoSuchElementException("Student not found"));
+            behaviorLog.setStudent(student);
+        }
 
         behaviorLog.setType(newBehaviorLogDetails.getType());
         behaviorLog.setDescription(newBehaviorLogDetails.getDescription());
@@ -42,4 +59,3 @@ public class BehaviorLogService {
         }
     }
 }
-
