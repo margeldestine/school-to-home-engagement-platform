@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.http.ResponseEntity;
 import com.appdevg5.geeks.repository.StudentRepository;
 import com.appdevg5.geeks.entity.StudentEntity;
+import com.appdevg5.geeks.service.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
@@ -15,6 +18,9 @@ import com.appdevg5.geeks.entity.StudentEntity;
 public class StudentController {
 
     private final StudentRepository studentRepository;
+    
+    @Autowired
+    private StudentService studentService;
 
     public StudentController(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
@@ -26,5 +32,9 @@ public class StudentController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+    
+    @GetMapping
+    public List<StudentEntity> getAllStudents() {
+        return studentService.getAllStudents();
+    }
 }
-

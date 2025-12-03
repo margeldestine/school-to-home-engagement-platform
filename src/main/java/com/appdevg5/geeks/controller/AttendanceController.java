@@ -1,6 +1,8 @@
 package com.appdevg5.geeks.controller;
 
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,8 +33,20 @@ public class AttendanceController {
     }
 
     @PostMapping
-    public AttendanceEntity createAttendance(@RequestBody AttendanceEntity attendance){
-        return aserv.insertAttendanceRecord(attendance);
+    public AttendanceEntity createAttendance(@RequestBody Map<String, Object> payload){
+        int studentId = (Integer) payload.get("student_id");
+        int teacherId = (Integer) payload.get("teacher_id");
+        String dateString = (String) payload.get("attendance_date");
+        String status = (String) payload.get("status");
+        
+        Timestamp timestamp = Timestamp.valueOf(dateString);
+        
+        return aserv.createAttendanceFromIds(studentId, teacherId, timestamp, status);
+    }
+
+    @PostMapping("/batch")
+    public List<AttendanceEntity> createBatchAttendance(@RequestBody List<AttendanceEntity> attendances){
+        return aserv.insertBatchAttendance(attendances);
     }
 
     @GetMapping("/getAllAttendances")

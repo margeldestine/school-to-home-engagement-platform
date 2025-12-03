@@ -43,4 +43,9 @@ public class ParentController {
     public String deleteParent(@PathVariable int parentId) {
         return pserv.deleteParent(parentId);
     }
+
+    @GetMapping("/getParentByUserId/{userId}")
+    public ParentEntity getParentByUserId(@PathVariable int userId) {
+        return pserv.getParentByUserId(userId);
+    }
 }

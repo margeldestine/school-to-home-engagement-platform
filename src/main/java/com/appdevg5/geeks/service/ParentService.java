@@ -38,5 +38,10 @@ public class ParentService {
             return "Parent " + parentId + " does not exist.";
         }
     }
+
+    public ParentEntity getParentByUserId(int userId) {
+        return prepo.findByUserId(userId)
+            .orElseThrow(() -> new NoSuchElementException("Parent not found for user_id: " + userId));
+    }
 }
  

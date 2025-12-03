@@ -2,12 +2,11 @@ package com.appdevg5.geeks.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import com.appdevg5.geeks.entity.TeacherEntity;
 import com.appdevg5.geeks.repository.TeacherRepository;
+
 
 @Service
 public class TeacherService {
@@ -23,19 +22,12 @@ public class TeacherService {
         return trepo.findAll();
     }
 
-    @SuppressWarnings("finally")
     public TeacherEntity updateTeacher(int tid, TeacherEntity newTeacherDetails) {
-        TeacherEntity teacher = new TeacherEntity();
-        try {
-            teacher = trepo.findById(tid).get();
-        } catch (NoSuchElementException ex) {
-            throw new NoSuchElementException("Teacher " + tid + " does not exist.");
-        } finally {
-            if (teacher.getTeacher_id() == 0) {
-                throw new NoSuchElementException("Teacher " + tid + " does not exist.");
-            }
-            return trepo.save(teacher);
-        }
+        TeacherEntity teacher = trepo.findById(tid).orElseThrow(
+            () -> new NoSuchElementException("Teacher " + tid + " does not exist!")
+        );
+        teacher.setUser(newTeacherDetails.getUser());
+        return trepo.save(teacher);
     }
 
     public String deleteTeacher(int tid) {
@@ -46,4 +38,12 @@ public class TeacherService {
             return "Teacher " + tid + " does not exist.";
         }
     }
+
+    public TeacherEntity getTeacherByUserId(int userId) {
+        return trepo.findByUserId(userId)
+            .orElseThrow(() -> new NoSuchElementException("Teacher not found for user_id: " + userId));
+    }
+
+    
+    
 }
