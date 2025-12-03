@@ -37,4 +37,9 @@ public class StudentController {
     public List<StudentEntity> getAllStudents() {
         return studentService.getAllStudents();
     }
+
+    @GetMapping("/by-section/{sectionId}")
+    public List<StudentEntity> getStudentsBySection(@PathVariable int sectionId) {
+        return studentService.getStudentsBySection(sectionId);
+    }
 }
