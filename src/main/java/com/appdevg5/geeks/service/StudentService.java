@@ -21,6 +21,10 @@ public class StudentService {
         return srepo.findAll();
     }
 
+    public List<StudentEntity> getStudentsBySection(int sectionId) {
+        return srepo.findBySectionId(sectionId);
+    }
+
     public StudentEntity updateStudent(int studentId, StudentEntity newStudentDetails) {
 
     StudentEntity student = srepo.findById(studentId)

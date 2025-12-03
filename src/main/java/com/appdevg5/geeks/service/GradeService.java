@@ -19,8 +19,16 @@ public class GradeService {
         return grepo.save(grade);
     }
 
-    public List <GradeEntity> getAllGrades(){
+    public List<GradeEntity> getAllGrades(){
         return grepo.findAll();
+    }
+    
+    public List<GradeEntity> getGradesBySection(int sectionId){
+        return grepo.findBySection(sectionId);
+    }
+    
+    public List<GradeEntity> getGradesByStudent(int studentId){
+        return grepo.findByStudentId(studentId); // Updated method name
     }
 
     public GradeEntity updateGrade(int gid, GradeEntity newGradeDetails){
