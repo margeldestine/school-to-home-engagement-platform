@@ -26,6 +26,7 @@ public class FormEntity {
     private TeacherEntity teacher;
 
     private String title;
+    private String details;
     private Timestamp due_date;
     private Timestamp created_at;
 
@@ -65,6 +66,14 @@ public class FormEntity {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public Timestamp getDue_date() {

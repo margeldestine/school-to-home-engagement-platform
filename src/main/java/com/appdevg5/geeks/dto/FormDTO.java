@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class FormDTO {
     private int formId;
     private String title;
+    private String details;
     private LocalDateTime dueDate;
     private LocalDateTime createdAt;
     private String teacherName;

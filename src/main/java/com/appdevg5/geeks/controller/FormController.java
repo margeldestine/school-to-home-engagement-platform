@@ -21,6 +21,7 @@ public class FormController {
         int teacherId = (Integer) payload.get("teacher_id");
         String title = (String) payload.get("title");
         String dueDate = (String) payload.get("due_date");
+        String details = (String) payload.get("details");
         
         if (!dueDate.contains(" ")) {
             dueDate = dueDate + " 00:00:00";
@@ -29,6 +30,7 @@ public class FormController {
         FormEntity form = new FormEntity();
         form.setTeacher_id(teacherId);
         form.setTitle(title);
+        form.setDetails(details);
         form.setDue_date(Timestamp.valueOf(dueDate));
         form.setCreated_at(new Timestamp(System.currentTimeMillis()));
         
