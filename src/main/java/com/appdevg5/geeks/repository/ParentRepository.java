@@ -6,4 +6,5 @@ import com.appdevg5.geeks.entity.ParentEntity;
 
 @Repository
 public interface ParentRepository extends JpaRepository<ParentEntity, Integer> {
+    // No extra methods needed
 }

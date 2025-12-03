@@ -6,4 +6,5 @@ import com.appdevg5.geeks.entity.TeacherEntity;
 
 @Repository
 public interface TeacherRepository extends JpaRepository<TeacherEntity, Integer> {
+    // No extra methods needed
 }

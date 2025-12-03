@@ -30,6 +30,8 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
         user.setFirst_name(dto.getFirstName());
         user.setLast_name(dto.getLastName());
+        
+        // Get role from DTO, default to PARENT if null
         String role = dto.getRole();
         role = role == null ? "PARENT" : role.toUpperCase();
         if (!role.equals("TEACHER") && !role.equals("PARENT")) {
@@ -43,11 +45,11 @@ public class AuthService {
     }
 
     public AuthResponseDTO login(LoginRequestDTO dto) {
-        UserEntity user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new NoSuchElementException("Invalid email or password"));
+        UserEntity user = userRepository.findByEmail(dto.getEmail())
+            .orElseThrow(() -> new NoSuchElementException("Invalid email or password"));
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new NoSuchElementException("Invalid email or password");
         }
         return new AuthResponseDTO(user.getUser_id(), user.getFirst_name(), user.getLast_name(), user.getRole());
     }
 }
-
