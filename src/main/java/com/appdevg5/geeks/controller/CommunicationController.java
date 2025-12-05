@@ -68,6 +68,37 @@ public class CommunicationController {
         return cserv.deleteCommunication(communicationId);
     }
 
+    @PutMapping("/{id}")
+    public CommunicationEntity updateCommunicationRest(@PathVariable("id") int id, @RequestBody Map<String, Object> payload) {
+        CommunicationEntity update = new CommunicationEntity();
+        Object teacherObj = payload.get("teacher_id");
+        if (teacherObj instanceof Number) {
+            update.setTeacher_id(((Number) teacherObj).intValue());
+        } else if (teacherObj instanceof String) {
+            try { update.setTeacher_id(Integer.parseInt((String) teacherObj)); } catch (Exception ignored) {}
+        }
+        String title = (String) payload.get("title");
+        String description = (String) payload.get("description");
+        String details = (String) payload.get("details");
+        String content = (String) payload.get("content");
+        String eventDate = (String) payload.get("event_date");
+        if (title != null) update.setTitle(title);
+        if (description != null) update.setDescription(description);
+        if (details != null) update.setDetails(details);
+        if (content != null) update.setContent(content);
+        if (eventDate != null && !eventDate.isEmpty()) {
+            if (!eventDate.contains(" ")) {
+                eventDate = eventDate + " 00:00:00";
+            }
+            update.setEvent_Date(Timestamp.valueOf(eventDate).toLocalDateTime());
+        }
+        return cserv.updateCommunication(id, update);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteCommunicationRest(@PathVariable("id") int id) {
+        return cserv.deleteCommunication(id);
+    }
     @PostMapping("/class-announcements")
     public CommunicationEntity createClassAnnouncement(@RequestBody Map<String, Object> payload) {
         int teacherId = (Integer) payload.getOrDefault("teacher_id", 0);
