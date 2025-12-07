@@ -26,12 +26,30 @@ public class CommunicationService {
         CommunicationEntity communication = crepo.findById(communicationId)
                 .orElseThrow(() -> new NoSuchElementException("Communication " + communicationId + " does not exist"));
 
-        communication.setTeacher_id(newCommunicationDetails.getTeacher_id());
-        communication.setAdmin_id(newCommunicationDetails.getAdmin_id());
-        communication.setTitle(newCommunicationDetails.getTitle());
-        communication.setContent(newCommunicationDetails.getContent());
-        communication.setEvent_Date(newCommunicationDetails.getEvent_Date());
-        communication.setPosted_At(newCommunicationDetails.getPosted_At());
+        if (newCommunicationDetails.getTeacher_id() > 0) {
+            communication.setTeacher_id(newCommunicationDetails.getTeacher_id());
+        }
+        if (newCommunicationDetails.getAdmin_id() > 0) {
+            communication.setAdmin_id(newCommunicationDetails.getAdmin_id());
+        }
+        if (newCommunicationDetails.getTitle() != null) {
+            communication.setTitle(newCommunicationDetails.getTitle());
+        }
+        if (newCommunicationDetails.getContent() != null) {
+            communication.setContent(newCommunicationDetails.getContent());
+        }
+        if (newCommunicationDetails.getDescription() != null) {
+            communication.setDescription(newCommunicationDetails.getDescription());
+        }
+        if (newCommunicationDetails.getDetails() != null) {
+            communication.setDetails(newCommunicationDetails.getDetails());
+        }
+        if (newCommunicationDetails.getEvent_Date() != null) {
+            communication.setEvent_Date(newCommunicationDetails.getEvent_Date());
+        }
+        if (newCommunicationDetails.getPosted_At() != null) {
+            communication.setPosted_At(newCommunicationDetails.getPosted_At());
+        }
 
         return crepo.save(communication);
     }
