@@ -57,6 +57,10 @@ public class GradeController {
             int gradingPeriod = ((Number) payload.get("grading_period")).intValue();
             float gradeValue = ((Number) payload.get("grade_value")).floatValue();
             
+            // NEW: assessment_name field 
+            String assessmentName = payload.containsKey("assessment_name") ? 
+                (String) payload.get("assessment_name") : null; 
+            
             // Optional teacher_id
             Integer teacherId = payload.containsKey("teacher_id") ? 
                 ((Number) payload.get("teacher_id")).intValue() : 1;
@@ -74,6 +78,7 @@ public class GradeController {
             grade.setTeacher_id(teacherId);
             grade.setGrade_value(gradeValue);
             grade.setGrading_period(gradingPeriod);
+            grade.setAssessment_name(assessmentName);  // NEW LINE 
             grade.setRecorded_at(new Timestamp(System.currentTimeMillis()));
             
             return gserv.insertGradeRecord(grade);
@@ -139,5 +144,42 @@ public class GradeController {
         }
         
         return result;
+    }
+
+    // Get all assessments for specific student/subject/quarter 
+    @GetMapping("/student/{studentId}/subject/{subjectId}/quarter/{quarter}") 
+    public List<GradeEntity> getDetailedGrades( 
+        @PathVariable int studentId, 
+        @PathVariable int subjectId, 
+        @PathVariable int quarter 
+    ) { 
+        return gserv.getGradesByStudentSubjectQuarter(studentId, subjectId, quarter); 
+    } 
+ 
+    // Calculate quarterly average from all assessments 
+    @GetMapping("/calculate/{studentId}/{subjectId}/{quarter}") 
+    public Map<String, Object> calculateQuarterGrade( 
+        @PathVariable int studentId, 
+        @PathVariable int subjectId, 
+        @PathVariable int quarter 
+    ) { 
+        List<GradeEntity> grades = gserv.getGradesByStudentSubjectQuarter( 
+            studentId, subjectId, quarter 
+        ); 
+        
+        if (grades.isEmpty()) { 
+            Map<String, Object> empty = new java.util.HashMap<>(); 
+            empty.put("quarter_grade", 0.0); 
+            return empty; 
+        } 
+        
+        double avg = grades.stream() 
+            .mapToDouble(GradeEntity::getGrade_value) 
+            .average() 
+            .orElse(0.0); 
+        
+        Map<String, Object> result = new java.util.HashMap<>(); 
+        result.put("quarter_grade", avg); 
+        return result; 
     }
 }

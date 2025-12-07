@@ -31,6 +31,10 @@ public class GradeService {
         return grepo.findByStudentId(studentId); // Updated method name
     }
 
+    public List<GradeEntity> getGradesByStudentSubjectQuarter(int studentId, int subjectId, int quarter) {
+        return grepo.findByStudentSubjectQuarter(studentId, subjectId, quarter);
+    }
+
     public GradeEntity updateGrade(int gid, GradeEntity newGradeDetails){
         GradeEntity grade = grepo.findById(gid).orElseThrow(
             () -> new NoSuchElementException("Grade " + gid + " does not exist!")

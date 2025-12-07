@@ -28,19 +28,21 @@ public class GradeEntity {
     private SubjectEntity subject;
     private float grade_value;
     private int grading_period;
+    private String assessment_name;
     private Timestamp recorded_at;
 
     public GradeEntity(){
         super();
     }
 
-    public GradeEntity(int grade_id, StudentEntity student, int teacher_id, SubjectEntity subject,float grade_value, int grading_period, Timestamp recorded_at){
+    public GradeEntity(int grade_id, StudentEntity student, int teacher_id, SubjectEntity subject,float grade_value, int grading_period, String assessment_name, Timestamp recorded_at){
         this.grade_id = grade_id;
         this.student = student;
         this.teacher_id = teacher_id;
         this.subject = subject;
         this.grade_value = grade_value;
         this.grading_period = grading_period;
+        this.assessment_name = assessment_name;
         this.recorded_at = recorded_at;
     }
 
@@ -92,6 +94,14 @@ public class GradeEntity {
 
     public void setGrading_period(int grading_period){
         this.grading_period = grading_period;
+    }
+
+    public String getAssessment_name() {
+        return assessment_name;
+    }
+
+    public void setAssessment_name(String assessment_name) {
+        this.assessment_name = assessment_name;
     }
 
     public Timestamp getRecorded_at(){
