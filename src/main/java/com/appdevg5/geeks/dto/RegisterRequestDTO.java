@@ -13,5 +13,23 @@ public class RegisterRequestDTO {
     private String firstName;
     private String lastName;
     private String role;
+    private String contactNumber;
+    private String studentNumber;
+
+    public String getContactNumber() {
+        return contactNumber;
+    }
+
+    public void setContactNumber(String contactNumber) {
+        this.contactNumber = contactNumber;
+    }
+
+    public String getStudentNumber() {
+        return studentNumber;
+    }
+
+    public void setStudentNumber(String studentNumber) {
+        this.studentNumber = studentNumber;
+    }
 }
 

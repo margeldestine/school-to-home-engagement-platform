@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.util.List;
 import java.util.ArrayList;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -21,6 +22,10 @@ public class ParentEntity {
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @ManyToOne
+    @JoinColumn(name = "student_id")
+    private StudentEntity student;
 
     @OneToMany(mappedBy = "parent")
     @JsonManagedReference(value = "parent-signatures")
@@ -55,6 +60,23 @@ public class ParentEntity {
 
     public void setSignatures(List<FormSignatureEntity> signatures) {
         this.signatures = signatures;
+    }
+
+    public StudentEntity getStudent() {
+        return student;
+    }
+
+    public void setStudent(StudentEntity student) {
+        this.student = student;
+    }
+
+    public int getStudent_id() {
+        return student != null ? student.getStudent_id() : 0;
+    }
+
+    public void setStudent_id(int student_id) {
+        this.student = new StudentEntity();
+        this.student.setStudent_id(student_id);
     }
 
     public void viewGrades() {

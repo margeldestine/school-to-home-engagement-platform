@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import com.appdevg5.geeks.exception.StudentNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,5 +19,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleNoSuch(NoSuchElementException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", ex.getMessage()));
     }
-}
 
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleStudentNotFound(StudentNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", ex.getMessage()));
+    }
+}
