@@ -52,7 +52,23 @@ public class AuthService {
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new NoSuchElementException("Invalid email or password");
         }
-        return new AuthResponseDTO(user.getUser_id(), user.getFirst_name(), user.getLast_name(), user.getRole());
+
+        AuthResponseDTO resp = new AuthResponseDTO(user.getUser_id(), user.getFirst_name(), user.getLast_name(), user.getRole());
+        resp.setEmail(user.getEmail());
+
+        if ("PARENT".equalsIgnoreCase(user.getRole())) {
+            ParentEntity parent = parentRepository.findByUserId(user.getUser_id()).orElse(null);
+            if (parent != null && parent.getStudent() != null) {
+                StudentEntity s = parent.getStudent();
+                resp.setParentId(parent.getParent_id());
+                resp.setStudentId(s.getStudent_id());
+                resp.setStudentFirstName(s.getFirst_name());
+                resp.setStudentLastName(s.getLast_name());
+                resp.setStudentGradeLevel(s.getGrade_level());
+            }
+        }
+
+        return resp;
     }
 
     @Transactional
@@ -93,6 +109,9 @@ public class AuthService {
         response.setRole("PARENT");
         response.setParentId(savedParent.getParent_id());
         response.setStudentId(student.getStudent_id());
+        response.setStudentFirstName(student.getFirst_name());
+        response.setStudentLastName(student.getLast_name());
+        response.setStudentGradeLevel(student.getGrade_level());
         response.setToken("DUMMY_TOKEN_" + savedUser.getUser_id());
         response.setMessage("Registration successful");
         return response;

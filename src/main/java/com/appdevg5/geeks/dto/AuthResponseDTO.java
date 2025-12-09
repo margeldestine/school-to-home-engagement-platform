@@ -17,6 +17,9 @@ public class AuthResponseDTO {
     private String email;
     private String token;
     private String message;
+    private String studentFirstName;
+    private String studentLastName;
+    private Integer studentGradeLevel;
 
     public AuthResponseDTO(int userId, String firstName, String lastName, String role) {
         this.userId = userId;
@@ -63,5 +66,29 @@ public class AuthResponseDTO {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getStudentFirstName() {
+        return studentFirstName;
+    }
+
+    public void setStudentFirstName(String studentFirstName) {
+        this.studentFirstName = studentFirstName;
+    }
+
+    public String getStudentLastName() {
+        return studentLastName;
+    }
+
+    public void setStudentLastName(String studentLastName) {
+        this.studentLastName = studentLastName;
+    }
+
+    public Integer getStudentGradeLevel() {
+        return studentGradeLevel;
+    }
+
+    public void setStudentGradeLevel(Integer studentGradeLevel) {
+        this.studentGradeLevel = studentGradeLevel;
     }
 }
