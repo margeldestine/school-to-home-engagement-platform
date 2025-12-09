@@ -13,5 +13,6 @@ public class ParentDTO {
     private String lastName;
     private String email;
     private Integer userId;
+    private Integer studentId;
 }
 
