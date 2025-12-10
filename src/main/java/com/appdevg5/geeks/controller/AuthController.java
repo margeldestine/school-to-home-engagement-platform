@@ -31,9 +31,21 @@ public class AuthController {
         return authService.register(dto);
     }
 
+    @PostMapping("/register-teacher")
+    public AuthResponseDTO registerTeacher(@RequestBody RegisterRequestDTO dto) {
+        return authService.registerTeacherWithId(dto);
+    }
+
     @PostMapping("/login")
     public AuthResponseDTO login(@RequestBody LoginRequestDTO dto) {
         return authService.login(dto);
+    }
+
+    @PostMapping("/link-parent-student")
+    public AuthResponseDTO linkParentStudent(@RequestBody java.util.Map<String, Object> payload) {
+        String email = (String) payload.get("email");
+        String studentNumber = (String) payload.get("student_number");
+        return authService.linkParentToStudent(email, studentNumber);
     }
 
     @PostMapping("/validate-student-number")

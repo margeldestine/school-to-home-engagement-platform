@@ -58,6 +58,11 @@ public class AuthService {
 
         if ("PARENT".equalsIgnoreCase(user.getRole())) {
             ParentEntity parent = parentRepository.findByUserId(user.getUser_id()).orElse(null);
+            if (parent == null) {
+                ParentEntity newParent = new ParentEntity();
+                newParent.setUser(user);
+                parent = parentRepository.save(newParent);
+            }
             if (parent != null && parent.getStudent() != null) {
                 StudentEntity s = parent.getStudent();
                 resp.setParentId(parent.getParent_id());
@@ -65,6 +70,17 @@ public class AuthService {
                 resp.setStudentFirstName(s.getFirst_name());
                 resp.setStudentLastName(s.getLast_name());
                 resp.setStudentGradeLevel(s.getGrade_level());
+                String fn = s.getFirst_name();
+                String ln = s.getLast_name();
+                String fullName = ((fn != null ? fn : "") + " " + (ln != null ? ln : "")).trim();
+                resp.setStudentName(fullName.isEmpty() ? null : fullName);
+            } else if (parent != null) {
+                resp.setParentId(parent.getParent_id());
+            }
+        } else if ("TEACHER".equalsIgnoreCase(user.getRole())) {
+            TeacherEntity teacher = teacherRepository.findByUserId(user.getUser_id()).orElse(null);
+            if (teacher != null) {
+                resp.setTeacherId(teacher.getTeacher_id());
             }
         }
 
@@ -154,5 +170,75 @@ public class AuthService {
         response.setToken("DUMMY_TOKEN_" + saved.getUser_id());
         response.setMessage("Registration successful");
         return response;
+    }
+
+    @Transactional
+    public AuthResponseDTO registerTeacherWithId(RegisterRequestDTO dto) {
+        String teacherIdNumber = dto.getTeacherIdNumber();
+        if (teacherIdNumber == null || !teacherIdNumber.matches("\\d{4}-\\d{5}")) {
+            throw new RuntimeException("Invalid teacher ID format. Expected ####-#####");
+        }
+
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("Email already in use");
+        }
+
+        UserEntity user = new UserEntity();
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setFirst_name(dto.getFirstName());
+        user.setLast_name(dto.getLastName());
+        user.setRole("TEACHER");
+        user.setCreated_at(new Timestamp(System.currentTimeMillis()));
+        UserEntity savedUser = userRepository.save(user);
+
+        TeacherEntity teacher = new TeacherEntity();
+        teacher.setUser(savedUser);
+        TeacherEntity savedTeacher = teacherRepository.save(teacher);
+
+        AuthResponseDTO response = new AuthResponseDTO();
+        response.setUserId(savedUser.getUser_id());
+        response.setEmail(savedUser.getEmail());
+        response.setFirstName(savedUser.getFirst_name());
+        response.setLastName(savedUser.getLast_name());
+        response.setRole("TEACHER");
+        response.setTeacherId(savedTeacher.getTeacher_id());
+        response.setToken("DUMMY_TOKEN_" + savedUser.getUser_id());
+        response.setMessage("Teacher registration successful");
+        return response;
+    }
+
+    @Transactional
+    public AuthResponseDTO linkParentToStudent(String email, String studentNumber) {
+        UserEntity user = userRepository.findByEmail(email)
+            .orElseThrow(() -> new NoSuchElementException("User not found"));
+        if (!"PARENT".equalsIgnoreCase(user.getRole())) {
+            throw new RuntimeException("User is not a parent");
+        }
+
+        ParentEntity parent = parentRepository.findByUserId(user.getUser_id()).orElse(null);
+        if (parent == null) {
+            parent = new ParentEntity();
+            parent.setUser(user);
+        }
+
+        Optional<StudentEntity> studentOpt = studentRepository.findByStudentNumber(studentNumber);
+        if (studentOpt.isEmpty()) {
+            throw new StudentNotFoundException("Student number not found. Please check and try again.");
+        }
+        StudentEntity student = studentOpt.get();
+        parent.setStudent(student);
+        ParentEntity savedParent = parentRepository.save(parent);
+
+        AuthResponseDTO resp = new AuthResponseDTO(user.getUser_id(), user.getFirst_name(), user.getLast_name(), user.getRole());
+        resp.setEmail(user.getEmail());
+        resp.setParentId(savedParent.getParent_id());
+        resp.setStudentId(student.getStudent_id());
+        resp.setStudentFirstName(student.getFirst_name());
+        resp.setStudentLastName(student.getLast_name());
+        resp.setStudentGradeLevel(student.getGrade_level());
+        String fullName = ((student.getFirst_name() != null ? student.getFirst_name() : "") + " " + (student.getLast_name() != null ? student.getLast_name() : "")).trim();
+        resp.setStudentName(fullName.isEmpty() ? null : fullName);
+        return resp;
     }
 }
