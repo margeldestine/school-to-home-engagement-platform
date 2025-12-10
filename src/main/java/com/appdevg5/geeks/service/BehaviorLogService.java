@@ -54,6 +54,21 @@ public class BehaviorLogService {
     }
 
     /**
+     * Get behavior logs for a specific student, most recent first
+     */
+    public List<BehaviorLogEntity> getBehaviorLogsByStudent(int studentId) {
+        return brepo.findByStudentIdOrderByIncidentDateDesc(studentId);
+    }
+
+    /**
+     * Get single behavior log by id
+     */
+    public BehaviorLogEntity getBehaviorLogById(int id) {
+        return brepo.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("BehaviorLog " + id + " not found"));
+    }
+
+    /**
      * Update an existing behavior log
      */
     public BehaviorLogEntity updateBehaviorLog(int behaviorId, BehaviorLogEntity newBehaviorLogDetails) {

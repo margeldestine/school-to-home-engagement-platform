@@ -56,27 +56,26 @@ public class BehaviorLogController {
 
     // READ - Get all with formatted response
     @GetMapping("/formatted")
-    public List<Map<String, Object>> getBehaviorLogsFormatted() {
+    public Map<String, Object> getBehaviorLogsFormatted() {
         List<BehaviorLogEntity> list = bserv.getAllBehaviorLogs();
-        return list.stream().map(b -> {
-            Map<String, Object> m = new java.util.LinkedHashMap<>();
-            m.put("id", b.getBehavior_id());
-            m.put("studentId", b.getStudent_id());
-            
-            String fullName = null;
-            if (b.getStudent() != null) {
-                String fn = b.getStudent().getFirst_name();
-                String ln = b.getStudent().getLast_name();
-                fullName = ((fn != null ? fn : "") + " " + (ln != null ? ln : "")).trim();
-            }
-            m.put("studentName", fullName);
-            m.put("date", b.getIncident_date() != null ? b.getIncident_date().toString() : null);
-            m.put("incident", b.getDescription());
-            m.put("actionTaken", b.getType());
-            m.put("recorded_at", b.getRecorded_at() != null ? b.getRecorded_at().toString() : null);
-            
-            return m;
-        }).toList();
+        List<Map<String, Object>> rows = list.stream().map(this::toUiMap).toList();
+        Map<String, Object> wrapper = new java.util.LinkedHashMap<>();
+        wrapper.put("data", rows);
+        return wrapper;
+    }
+
+    // READ - Per-student logs (UI shape)
+    @GetMapping("/student/{studentId}")
+    public List<Map<String, Object>> getBehaviorLogsByStudent(@PathVariable int studentId) {
+        List<BehaviorLogEntity> list = bserv.getBehaviorLogsByStudent(studentId);
+        return list.stream().map(this::toUiMap).toList();
+    }
+
+    // READ - Single log by id (UI shape)
+    @GetMapping("/{id}")
+    public Map<String, Object> getBehaviorLogById(@PathVariable int id) {
+        BehaviorLogEntity b = bserv.getBehaviorLogById(id);
+        return toUiMap(b);
     }
 
     // UPDATE - Update behavior log
@@ -188,5 +187,31 @@ public class BehaviorLogController {
                     ". Expected yyyy-MM-dd or MM/dd/yyyy");
             }
         }
+    }
+
+    private Map<String, Object> toUiMap(BehaviorLogEntity b) {
+        Map<String, Object> m = new java.util.LinkedHashMap<>();
+        m.put("id", b.getBehavior_id());
+        m.put("studentId", b.getStudent_id());
+        m.put("student_id", b.getStudent_id());
+
+        String fullName = null;
+        if (b.getStudent() != null) {
+            String fn = b.getStudent().getFirst_name();
+            String ln = b.getStudent().getLast_name();
+            fullName = ((fn != null ? fn : "") + " " + (ln != null ? ln : "")).trim();
+            Map<String, Object> studentObj = new java.util.LinkedHashMap<>();
+            studentObj.put("student_id", b.getStudent_id());
+            studentObj.put("first_name", fn);
+            studentObj.put("last_name", ln);
+            m.put("student", studentObj);
+        }
+        m.put("studentName", fullName);
+        m.put("date", b.getIncident_date() != null ? b.getIncident_date().toString() : null);
+        m.put("incident_date", b.getIncident_date() != null ? b.getIncident_date().toString() : null);
+        m.put("incident", b.getDescription());
+        m.put("actionTaken", b.getType());
+        m.put("recorded_at", b.getRecorded_at() != null ? b.getRecorded_at().toString() : null);
+        return m;
     }
 }
