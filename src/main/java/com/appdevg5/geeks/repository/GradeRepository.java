@@ -21,8 +21,12 @@ public interface GradeRepository extends JpaRepository<GradeEntity, Integer>{
     @Query("SELECT g FROM GradeEntity g WHERE g.student.section.section_id = :sectionId")
     List<GradeEntity> findBySection(@Param("sectionId") int sectionId);
     
-    @Query("SELECT g FROM GradeEntity g WHERE g.student.student_id = :studentId " + 
-           "AND g.subject.subject_id = :subjectId AND g.grading_period = :quarter")
+    @Query("SELECT g FROM GradeEntity g " +
+           "JOIN g.student s " +
+           "JOIN g.subject sub " +
+           "WHERE s.student_id = :studentId " +
+           "AND sub.subject_id = :subjectId " +
+           "AND g.grading_period = :quarter")
     List<GradeEntity> findByStudentSubjectQuarter(
         @Param("studentId") int studentId, 
         @Param("subjectId") int subjectId, 

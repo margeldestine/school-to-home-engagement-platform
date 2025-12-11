@@ -23,6 +23,9 @@ import com.appdevg5.geeks.dto.GradeDTO;
 import com.appdevg5.geeks.service.StudentService;
 import com.appdevg5.geeks.repository.StudentRepository;
 import com.appdevg5.geeks.repository.SubjectRepository;
+import com.appdevg5.geeks.repository.GradeRepository;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -42,6 +45,9 @@ public class GradeController {
     
     @Autowired
     SubjectRepository subjectRepo;
+    
+    @Autowired
+    GradeRepository gradeRepository;
 
     @PostMapping("/insertGradeRecord")
     public GradeEntity insertGradeRecord(@RequestBody GradeEntity grade){
@@ -153,7 +159,11 @@ public class GradeController {
         @PathVariable int subjectId, 
         @PathVariable int quarter 
     ) { 
-        return gserv.getGradesByStudentSubjectQuarter(studentId, subjectId, quarter); 
+        System.out.println("[Grades] Fetching detailed grades: studentId=" + studentId + 
+            ", subjectId=" + subjectId + ", quarter=" + quarter);
+        List<GradeEntity> grades = gserv.getGradesByStudentSubjectQuarter(studentId, subjectId, quarter); 
+        System.out.println("[Grades] Returned count=" + grades.size());
+        return grades; 
     } 
  
     // Calculate quarterly average from all assessments 
@@ -181,5 +191,94 @@ public class GradeController {
         Map<String, Object> result = new java.util.HashMap<>(); 
         result.put("quarter_grade", avg); 
         return result; 
+    }
+
+    @GetMapping("/student/{studentId}/quarter/{quarter}/average")
+    public ResponseEntity<Double> getStudentQuarterAverage(
+        @PathVariable int studentId,
+        @PathVariable int quarter
+    ) {
+        try {
+            List<GradeEntity> grades = gradeRepository.findByStudentIdAndGradingPeriod(studentId, quarter);
+            if (grades.isEmpty()) {
+                return ResponseEntity.ok(0.0);
+            }
+
+            java.util.Map<String, java.util.List<Double>> categoryScores = new java.util.HashMap<>();
+            categoryScores.put("QUIZ", new java.util.ArrayList<>());
+            categoryScores.put("EXAM", new java.util.ArrayList<>());
+            categoryScores.put("PERF", new java.util.ArrayList<>());
+            categoryScores.put("ASG", new java.util.ArrayList<>());
+
+            for (GradeEntity grade : grades) {
+                String name = grade.getAssessment_name();
+                if (name == null) continue;
+                if (name.startsWith("[QUIZ]")) {
+                    categoryScores.get("QUIZ").add((double) grade.getGrade_value());
+                } else if (name.startsWith("[EXAM]")) {
+                    categoryScores.get("EXAM").add((double) grade.getGrade_value());
+                } else if (name.startsWith("[PERF]")) {
+                    categoryScores.get("PERF").add((double) grade.getGrade_value());
+                } else if (name.startsWith("[ASG]")) {
+                    categoryScores.get("ASG").add((double) grade.getGrade_value());
+                }
+            }
+
+            double quizAvg = categoryScores.get("QUIZ").isEmpty() ? 0 :
+                categoryScores.get("QUIZ").stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            double examAvg = categoryScores.get("EXAM").isEmpty() ? 0 :
+                categoryScores.get("EXAM").stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            double perfAvg = categoryScores.get("PERF").isEmpty() ? 0 :
+                categoryScores.get("PERF").stream().mapToDouble(Double::doubleValue).average().orElse(0);
+            double asgAvg = categoryScores.get("ASG").isEmpty() ? 0 :
+                categoryScores.get("ASG").stream().mapToDouble(Double::doubleValue).average().orElse(0);
+
+            double total = (quizAvg * 0.3) + (examAvg * 0.3) + (perfAvg * 0.3) + (asgAvg * 0.1);
+            return ResponseEntity.ok(Math.round(total * 100.0) / 100.0);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(0.0);
+        }
+    }
+
+    @GetMapping("/student/{studentId}/quarter/{quarter}")
+    public ResponseEntity<Double> getStudentQuarter(
+        @PathVariable int studentId,
+        @PathVariable int quarter
+    ) {
+        return getStudentQuarterAverage(studentId, quarter);
+    }
+
+    @GetMapping("/student/{studentId}/quarters")
+    public ResponseEntity<java.util.Map<String, Double>> getStudentQuarterAverages(
+        @PathVariable int studentId
+    ) {
+        java.util.Map<String, Double> result = new java.util.HashMap<>();
+        result.put("Q1", getStudentQuarterAverage(studentId, 1).getBody());
+        result.put("Q2", getStudentQuarterAverage(studentId, 2).getBody());
+        result.put("Q3", getStudentQuarterAverage(studentId, 3).getBody());
+        result.put("Q4", getStudentQuarterAverage(studentId, 4).getBody());
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/student/{studentId}/finals")
+    public ResponseEntity<Double> getStudentFinals(
+        @PathVariable int studentId
+    ) {
+        double q1 = getStudentQuarterAverage(studentId, 1).getBody();
+        double q2 = getStudentQuarterAverage(studentId, 2).getBody();
+        double q3 = getStudentQuarterAverage(studentId, 3).getBody();
+        double q4 = getStudentQuarterAverage(studentId, 4).getBody();
+
+        java.util.List<Double> quarters = new java.util.ArrayList<>();
+        if (q1 > 0) quarters.add(q1);
+        if (q2 > 0) quarters.add(q2);
+        if (q3 > 0) quarters.add(q3);
+        if (q4 > 0) quarters.add(q4);
+
+        if (quarters.isEmpty()) {
+            return ResponseEntity.ok(0.0);
+        }
+        double finals = quarters.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+        return ResponseEntity.ok(Math.round(finals * 100.0) / 100.0);
     }
 }
