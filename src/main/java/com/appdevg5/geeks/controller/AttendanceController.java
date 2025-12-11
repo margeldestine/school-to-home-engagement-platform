@@ -49,7 +49,6 @@ public class AttendanceController {
         return aserv.insertBatchAttendance(attendances);
     }
 
-
     @GetMapping("/getAllAttendances")
     public List<AttendanceEntity> getAllAttendances(){
         return aserv.getAllAttendances();
@@ -60,6 +59,19 @@ public class AttendanceController {
         return aserv.getAllAttendances();
     }
 
+    // NEW ENDPOINT: Get all attendance for a specific student
+    @GetMapping("/student/{studentId}")
+    public List<AttendanceEntity> getAttendanceByStudent(@PathVariable int studentId) {
+        return aserv.getAttendanceByStudent(studentId);
+    }
+
+    // NEW ENDPOINT: Get attendance for a specific student on a specific date
+    @GetMapping("/student/{studentId}/date/{date}")
+    public List<AttendanceEntity> getAttendanceByStudentAndDate(
+            @PathVariable int studentId, 
+            @PathVariable String date) {
+        return aserv.getAttendanceByStudentAndDate(studentId, date);
+    }
 
     @PutMapping("/updateAttendance")
     public AttendanceEntity updateAttendance(@RequestParam int aid, @RequestBody AttendanceEntity attendance){
