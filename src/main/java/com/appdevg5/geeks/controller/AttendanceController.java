@@ -49,6 +49,7 @@ public class AttendanceController {
         return aserv.insertBatchAttendance(attendances);
     }
 
+
     @GetMapping("/getAllAttendances")
     public List<AttendanceEntity> getAllAttendances(){
         return aserv.getAllAttendances();
@@ -58,6 +59,7 @@ public class AttendanceController {
     public List<AttendanceEntity> getAttendances(){
         return aserv.getAllAttendances();
     }
+
 
     @PutMapping("/updateAttendance")
     public AttendanceEntity updateAttendance(@RequestParam int aid, @RequestBody AttendanceEntity attendance){

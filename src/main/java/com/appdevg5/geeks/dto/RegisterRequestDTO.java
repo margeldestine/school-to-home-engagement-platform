@@ -15,6 +15,7 @@ public class RegisterRequestDTO {
     private String role;
     private String contactNumber;
     private String studentNumber;
+    private String teacherIdNumber;
 
     public String getContactNumber() {
         return contactNumber;
@@ -30,6 +31,14 @@ public class RegisterRequestDTO {
 
     public void setStudentNumber(String studentNumber) {
         this.studentNumber = studentNumber;
+    }
+
+    public String getTeacherIdNumber() {
+        return teacherIdNumber;
+    }
+
+    public void setTeacherIdNumber(String teacherIdNumber) {
+        this.teacherIdNumber = teacherIdNumber;
     }
 }
 

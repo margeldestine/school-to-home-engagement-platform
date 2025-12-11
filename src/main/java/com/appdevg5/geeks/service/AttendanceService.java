@@ -75,9 +75,11 @@ public class AttendanceService {
         return arepo.saveAll(attendances);
     }
 
+
     public List<AttendanceEntity> getAllAttendances(){
         return arepo.findAll();
     }
+
 
     public AttendanceEntity updateAttendance(int aid, AttendanceEntity newAttendanceDetails){
         AttendanceEntity attendance = arepo.findById(aid).orElseThrow(
@@ -114,4 +116,5 @@ public class AttendanceService {
 
         return msg;
     }
+
 }
