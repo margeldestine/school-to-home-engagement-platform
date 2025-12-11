@@ -58,29 +58,11 @@ public class AuthService {
 
         if ("PARENT".equalsIgnoreCase(user.getRole())) {
             ParentEntity parent = parentRepository.findByUserId(user.getUser_id()).orElse(null);
-            if (parent == null) {
-                ParentEntity newParent = new ParentEntity();
-                newParent.setUser(user);
-                parent = parentRepository.save(newParent);
-            }
             if (parent != null && parent.getStudent() != null) {
-                StudentEntity s = parent.getStudent();
-                resp.setParentId(parent.getParent_id());
-                resp.setStudentId(s.getStudent_id());
-                resp.setStudentFirstName(s.getFirst_name());
-                resp.setStudentLastName(s.getLast_name());
-                resp.setStudentGradeLevel(s.getGrade_level());
-                String fn = s.getFirst_name();
-                String ln = s.getLast_name();
-                String fullName = ((fn != null ? fn : "") + " " + (ln != null ? ln : "")).trim();
-                resp.setStudentName(fullName.isEmpty() ? null : fullName);
-            } else if (parent != null) {
-                resp.setParentId(parent.getParent_id());
-            }
-        } else if ("TEACHER".equalsIgnoreCase(user.getRole())) {
-            TeacherEntity teacher = teacherRepository.findByUserId(user.getUser_id()).orElse(null);
-            if (teacher != null) {
-                resp.setTeacherId(teacher.getTeacher_id());
+                StudentEntity student = parent.getStudent();
+                resp.setStudentFirstName(student.getFirst_name());
+                resp.setStudentLastName(student.getLast_name());
+                resp.setStudentGradeLevel(student.getGrade_level());
             }
         }
 
