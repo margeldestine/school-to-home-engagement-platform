@@ -1,6 +1,8 @@
 package com.appdevg5.geeks.service;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -75,11 +77,22 @@ public class AttendanceService {
         return arepo.saveAll(attendances);
     }
 
-
     public List<AttendanceEntity> getAllAttendances(){
         return arepo.findAll();
     }
 
+    // NEW METHOD: Get all attendance records for a specific student
+    public List<AttendanceEntity> getAttendanceByStudent(int studentId) {
+        return arepo.findByStudentId(studentId);
+    }
+
+    // NEW METHOD: Get attendance for a specific student on a specific date
+    public List<AttendanceEntity> getAttendanceByStudentAndDate(int studentId, String dateString) {
+        LocalDate localDate = LocalDate.parse(dateString);
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        Timestamp timestamp = Timestamp.valueOf(startOfDay);
+        return arepo.findByStudentIdAndDate(studentId, timestamp);
+    }
 
     public AttendanceEntity updateAttendance(int aid, AttendanceEntity newAttendanceDetails){
         AttendanceEntity attendance = arepo.findById(aid).orElseThrow(
@@ -116,5 +129,4 @@ public class AttendanceService {
 
         return msg;
     }
-
 }
