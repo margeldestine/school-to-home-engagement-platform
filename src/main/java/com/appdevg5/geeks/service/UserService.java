@@ -1,6 +1,7 @@
 package com.appdevg5.geeks.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +25,13 @@ public class UserService {
 
     @Autowired
     ParentRepository prepo;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    private boolean isPasswordHashed(String password) {
+        return password != null && (password.startsWith("$2a$") || password.startsWith("$2b$") || password.startsWith("$2y$"));
+    }
 
     public UserEntity insertUserRecord(UserEntity user) {
         // Save the user first
@@ -55,11 +63,18 @@ public class UserService {
             String oldRole = user.getRole();
             
             user.setEmail(newUserDetails.getEmail());
-            user.setPassword(newUserDetails.getPassword());
+            String incomingPassword = newUserDetails.getPassword();
+            if (incomingPassword != null && !incomingPassword.isBlank()) {
+                user.setPassword(isPasswordHashed(incomingPassword)
+                        ? incomingPassword
+                        : passwordEncoder.encode(incomingPassword));
+            }
             user.setFirst_name(newUserDetails.getFirst_name());
             user.setLast_name(newUserDetails.getLast_name());
             user.setRole(newUserDetails.getRole());
-            user.setCreated_at(newUserDetails.getCreated_at());
+            if (newUserDetails.getCreated_at() != null) {
+                user.setCreated_at(newUserDetails.getCreated_at());
+            }
             
             // If role changed, create appropriate entity
             if (!oldRole.equalsIgnoreCase(newUserDetails.getRole())) {
