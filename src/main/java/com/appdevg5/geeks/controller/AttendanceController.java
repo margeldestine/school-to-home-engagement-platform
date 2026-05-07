@@ -82,4 +82,11 @@ public class AttendanceController {
     public String deleteAttendance(@PathVariable int aid){
         return aserv.deleteAttendance(aid);
     }
+
+    @GetMapping("/section/{sectionId}/date/{date}")
+    public List<AttendanceEntity> getAttendanceBySectionAndDate(
+            @PathVariable int sectionId,
+            @PathVariable String date) {
+        return aserv.getAttendanceBySectionAndDate(sectionId, date);
+    }
 }

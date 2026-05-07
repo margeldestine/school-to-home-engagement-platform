@@ -16,4 +16,17 @@ public interface AttendanceRepository extends JpaRepository<AttendanceEntity, In
 
     @Query("SELECT a FROM AttendanceEntity a WHERE a.student.student_id = :studentId AND DATE(a.attendance_date) = DATE(:date)")
     List<AttendanceEntity> findByStudentIdAndDate(@Param("studentId") int studentId, @Param("date") Timestamp date);
+
+    @Query("SELECT a FROM AttendanceEntity a WHERE a.student.student_id = :studentId AND a.teacher.teacher_id = :teacherId AND DATE(a.attendance_date) = DATE(:date)")
+    List<AttendanceEntity> findByStudentIdAndTeacherIdAndDate(
+            @Param("studentId") int studentId,
+            @Param("teacherId") int teacherId,
+            @Param("date") Timestamp date
+    );
+
+    @Query("SELECT a FROM AttendanceEntity a WHERE a.student.section.section_id = :sectionId AND DATE(a.attendance_date) = DATE(:date)")
+    List<AttendanceEntity> findBySectionIdAndDate(
+            @Param("sectionId") int sectionId,
+            @Param("date") Timestamp date
+    );
 }

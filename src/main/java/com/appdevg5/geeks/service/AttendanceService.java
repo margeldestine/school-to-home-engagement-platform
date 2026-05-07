@@ -30,17 +30,27 @@ public class AttendanceService {
 
     public AttendanceEntity createAttendanceFromIds(int studentId, int teacherId, Timestamp date, String status) {
         StudentEntity student = srepo.findById(studentId)
-            .orElseThrow(() -> new NoSuchElementException("Student with ID " + studentId + " not found"));
-        
+                .orElseThrow(() -> new NoSuchElementException("Student with ID " + studentId + " not found"));
+
         TeacherEntity teacher = trepo.findById(teacherId)
-            .orElseThrow(() -> new NoSuchElementException("Teacher with ID " + teacherId + " not found"));
-        
-        AttendanceEntity attendance = new AttendanceEntity();
-        attendance.setStudent(student);
-        attendance.setTeacher(teacher);
-        attendance.setAttendance_date(date);
+                .orElseThrow(() -> new NoSuchElementException("Teacher with ID " + teacherId + " not found"));
+
+        List<AttendanceEntity> existingRecords =
+                arepo.findByStudentIdAndTeacherIdAndDate(studentId, teacherId, date);
+
+        AttendanceEntity attendance;
+
+        if (!existingRecords.isEmpty()) {
+            attendance = existingRecords.get(0);
+        } else {
+            attendance = new AttendanceEntity();
+            attendance.setStudent(student);
+            attendance.setTeacher(teacher);
+            attendance.setAttendance_date(date);
+        }
+
         attendance.setStatus(status);
-        
+
         return arepo.save(attendance);
     }
 
@@ -128,5 +138,13 @@ public class AttendanceService {
         }
 
         return msg;
+    }
+
+    public List<AttendanceEntity> getAttendanceBySectionAndDate(int sectionId, String dateString) {
+        LocalDate localDate = LocalDate.parse(dateString);
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        Timestamp timestamp = Timestamp.valueOf(startOfDay);
+
+        return arepo.findBySectionIdAndDate(sectionId, timestamp);
     }
 }
